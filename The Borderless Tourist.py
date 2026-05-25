@@ -15,10 +15,12 @@ test_traveler = ['Erin Wilkes', 'Shanghai, China', ['historical site', 'art']]
 
 #CA solution
 def get_destination_index(destination):
+    try:
+        destinations.index(destination)
+    except:
+        print("Destination doesn't exist")
+        return -1
     return destinations.index(destination)
-
-#print(get_destination_index("Los Angeles, USA"))
-
 
 #2. Get Traveller Location
 def get_traveler_location(traveler):
@@ -58,18 +60,25 @@ add_attraction("Cairo, Egypt", ["Pyramids of Giza", ["monument", "historical sit
 add_attraction("Cairo, Egypt", ["Egyptian Museum", ["museum"]])
 
 #4. Find Attractions
+# def find_attractions(destination, interests):
+#     destination_index = get_destination_index(destination)
+#     attractions_in_city = attractions[destination_index]
+#     attractions_with_interest = []
+#     for attraction in attractions_in_city:
+#         for interest in interests:
+#             for tags in attraction[1]:
+#                 if interest == tags:
+#                     attractions_with_interest.append(attraction[0])
+#     return attractions_with_interest
+
 def find_attractions(destination, interests):
     destination_index = get_destination_index(destination)
     attractions_in_city = attractions[destination_index]
-    attractions_with_interest = []
-    for attraction in attractions_in_city:
-        possible_attraction = attraction
-        attraction_tags = possible_attraction[1]
-        for interest in interests:
-            for tags in attraction_tags:
-                if interest == tags:
-                    attractions_with_interest.append(possible_attraction[0])
-    return attractions_with_interest
+
+    return [attraction[0] # The return
+            for attraction in attractions_in_city # The initial loop, check through all attractions
+            if any(interest in attraction[1] for interest in interests) #Check through all traveler interests, and match to attraction in the 1st index
+    ]
 
 la_arts = find_attractions("Los Angeles, USA", ['art'])
 
