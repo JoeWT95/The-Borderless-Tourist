@@ -1,50 +1,35 @@
 #The Borderless Tourist
 
-#Decalarations
+#1. Setup
 destinations = ["Paris, France", "Shanghai, China", "Los Angeles, USA", "Sao Paulo, Brazil", "Cairo, Egypt"]
-
 test_traveler = ['Erin Wilkes', 'Shanghai, China', ['historical site', 'art']]
 
-#1. Get Index
-## My solution
-# def get_destination_index(destination):
-#  for i in range(len(destinations)):
-#    if destinations[i] == destination:
-#      destination_index = i
-#  return destination_index  
-
-#CA solution
+#2. Travelling to Faraway Lands
 def get_destination_index(destination):
     try:
-        destinations.index(destination)
+        return destinations.index(destination)
     except:
-        print("Destination doesn't exist")
+        print(f"Destination {destination} doesn't exist")
         return -1
-    return destinations.index(destination)
 
-#2. Get Traveller Location
 def get_traveler_location(traveler):
-    traveler_destination = traveler[1]
-    return traveler_destination
+    if len(traveler) < 1 :
+        print("Travel has no location")
+        return ""
+    return traveler[1]
 
-traveler_destination_index = get_destination_index(get_traveler_location(test_traveler))
+#Testing Returns
+test_destination_location = get_traveler_location(test_traveler)
+test_destination_index = get_destination_index(test_destination_location)
+print("2. Testing Destination Index : " + str(test_destination_index))
+print("2. Testing Destination Location : " + str(test_destination_location))
 
-#3. Attactions
-# Basic Declare
-#attractions = [[], [], [], [], []]
-
-#Loop Declare
-# attractions = []
-# for i in range(5):
-#     attractions.append([])
-
-#List Comprehension
+#3. Visiting Interesting Places
 attractions = [[] for destination in destinations]
 
 def add_attraction(destination, attraction):
     destination_index = get_destination_index(destination)
-    attractions_for_destination = attractions[destination_index]
-    attractions_for_destination.append(attraction)
+    attractions[destination_index].append(attraction)
     return
 
 add_attraction("Los Angeles, USA", ["Venice Beach", ["Beach"]])
@@ -59,40 +44,34 @@ add_attraction("Sao Paulo, Brazil", ["Pátio do Colégio", ["historical site"]])
 add_attraction("Cairo, Egypt", ["Pyramids of Giza", ["monument", "historical site"]])
 add_attraction("Cairo, Egypt", ["Egyptian Museum", ["museum"]])
 
-#4. Find Attractions
-# def find_attractions(destination, interests):
-#     destination_index = get_destination_index(destination)
-#     attractions_in_city = attractions[destination_index]
-#     attractions_with_interest = []
-#     for attraction in attractions_in_city:
-#         for interest in interests:
-#             for tags in attraction[1]:
-#                 if interest == tags:
-#                     attractions_with_interest.append(attraction[0])
-#     return attractions_with_interest
-
+#4. Finding the Best Places to Go
 def find_attractions(destination, interests):
     destination_index = get_destination_index(destination)
-    attractions_in_city = attractions[destination_index]
+    attractions_at_location = attractions[destination_index]
 
-    return [attraction[0] # The return
-            for attraction in attractions_in_city # The initial loop, check through all attractions
-            if any(interest in attraction[1] for interest in interests) #Check through all traveler interests, and match to attraction in the 1st index
-    ]
+    return [ attraction[0]
+             for attraction in attractions_at_location
+             for interest in interests
+             for tags in attraction[1]
+             if tags == interest]
 
-la_arts = find_attractions("Los Angeles, USA", ['art'])
+#Testing Returns
+print("4. " + str(find_attractions("Los Angeles, USA", ['art'])))
+print("4. " + str(find_attractions("Shanghai, China", ['garden', 'skyscraper'])))
 
-# print(la_arts)
-
-#Get Attractions
+#5. See The Parts of a City You want to See
 def get_attractions_for_traveler(traveler):
     traveler_destination = traveler[1]
     traveler_interests = traveler[2]
-    traveler_attactions = find_attractions(traveler_destination, traveler_interests)
+    traveler_attractions = find_attractions(traveler_destination, traveler_interests)
 
-    interests_string = "Hi " + traveler[0] + ", we think you'll like these places around " + traveler_destination + " :"
-    for attraction in traveler_attactions:
-        interests_string += str(attraction)
+    interests_string = "Hi " + traveler[0] + ", we think you'll like these places around " + traveler_destination + " : "
+    for i in range(len(traveler_attractions)):
+        interests_string += str(traveler_attractions[i])
+        if i != len(traveler_attractions) - 1:
+            interests_string += " and "
     return interests_string
 
-print(get_attractions_for_traveler(['Dereck Smill', 'Paris, France', ['monument']]))
+#Testing Returns
+print(f"5. {get_attractions_for_traveler(['Dereck Smill', 'Paris, France', ['monument']])}")
+print(f"5. {get_attractions_for_traveler(['Joe Tilley', 'Cairo, Egypt', ['historical site', 'museum']])}")
